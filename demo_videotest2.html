@@ -23,14 +23,6 @@
     ]
   }
 
-
-
-  var preload = {
-      type: jsPsychPreload,
-      auto_preload: true,
-      max_load_time: 10000
-  }
-
   var m = {
       timeline: [
           {
@@ -94,7 +86,6 @@
   };
 
   jsPsych.run([
-    preload,
     m,
     //,
     ending
