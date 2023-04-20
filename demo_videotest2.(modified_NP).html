@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych-7.0/dist/jspsych.js"></script>
+    <script src="jspsych-7.0/dist/plugin-survey-text.js"></script>
+    <script src="jspsych-7.0/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-video-button-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-preload.js"></script>
+    <script src="jspsych-7.0/dist/plugin-audio-button-response.js"></script>
+    <link href="jspsych-7.0/dist/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+  const jsPsych = initJsPsych();
+
+  var participant_info = {
+    type: jsPsychSurveyText,
+    questions: [
+      {prompt: "Participant name", name: "participant_name"},
+      {prompt: "Participant ID", name: "participant_ID"}
+    ]
+  }
+
+//sample without replacement
+  var buttons = [{image:'img/f1a.png',correct_response:true},
+                {image:'img/f1b.png',correct_response:false},
+                {image:'img/f2a.png',correct_response:false},
+                {image:'img/f2b.png',correct_response:false}]
+
+
+  var m = {
+      timeline: [
+          {
+              type: jsPsychHtmlButtonResponse,
+              stimulus: '<img src="img/mimg330-1.png"></img>',
+              choices: jsPsych.randomization.sampleWithoutReplacement(buttons, 2).map(buttons => buttons.image),
+              button_html: '<img src="%choice%" />',
+              save_trial_parameters: {
+                choices: true
+              },
+              on_finish: function(data){
+                // Score the keyboard response as correct or incorrect.
+                var correct_response = jsPsych.timelineVariable("correct_response", {timeline:"m"});
+                data.correct_response= correct_response;
+              }
+          }
+        ],
+      repetitions: 1,
+      randomize_order: true
+    }
+
+
+
+  //end message//
+  var ending = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "<p>Thank you for participating in this game!</p>",
+    on_start: function(data){
+      var file_name = 'LT_' + '.csv';
+      jsPsych.data.get().localSave('csv',file_name); // Saves a file on the computer running the experiment. First localSave argument is the format, second is the filename.
+    }
+  };
+
+  jsPsych.run([
+    m,
+    //,
+    ending
+  ]);
+  </script>
+</html>
