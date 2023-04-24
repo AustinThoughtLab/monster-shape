@@ -83,60 +83,216 @@
       ]
     }
 
-  var day1 = {
-      timeline: [
-          {
-              type: jsPsychHtmlButtonResponse,
-              stimulus: '<img src="img/mimg330-1.png"></img>',
-              choices: [
-                          jsPsych.timelineVariable('choiceA'),
-                          jsPsych.timelineVariable('choiceB'),
-                          jsPsych.timelineVariable('choiceC'),
-                          jsPsych.timelineVariable('choiceD')
-                        ],
-              button_html: '<img src="%choice%" />',
-              save_trial_parameters: {
-                choices: true
-              },
-              on_finish: function(data){
-                // Score the keyboard response as correct or incorrect.
-                data.correct_response = jsPsych.timelineVariable("correct_response");
-                data.correct = data.correct_response.includes(data.response);
-                //data.test1 = data.set;
-              }
-          },
-          {
-            type: jsPsychVideoButtonResponse,
-            stimulus: function(){
-              var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
-              if(last_trial_correct){
-                return [
-                  'videos/m1- correct.mp4'
-                ]; // the parameter value has to be returned from the function
-              } else {
-                return [
-                  'videos/m1-wrong.mp4'
-                ]; // the parameter value has to be returned from the function
-              }
-            },
-            choices: function(){
-              return jsPsych.data.get().last(1).values()[0].choices
-              },
-            button_html: '<img src="%choice%" />',
-            response_allowed_while_playing: false,
-            trial_ends_after_video: true
-          }
+    var night = {
+      type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/monster-bedtime.mp4'
         ],
-      timeline_variables: [
-          {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
-          {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1]},//either of the first two choices are correct
-          {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
-        ],
-      repetitions: 1,
-      randomize_order: true
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
     }
 
+    var day1 = {
+        timeline: [
+            {
+                type: jsPsychHtmlButtonResponse,
+                stimulus: '<img src="img/mimg330-1.png"></img>',
+                choices: [
+                            jsPsych.timelineVariable('choiceA'),
+                            jsPsych.timelineVariable('choiceB'),
+                            jsPsych.timelineVariable('choiceC'),
+                            jsPsych.timelineVariable('choiceD')
+                          ],
+                button_html: '<img src="%choice%" />',
+                save_trial_parameters: {
+                  choices: true
+                },
+                on_finish: function(data){
+                  // Score the keyboard response as correct or incorrect.
+                  data.correct_response = jsPsych.timelineVariable("correct_response");
+                  data.correct = data.correct_response.includes(data.response);
+                  //data.test1 = data.set;
+                }
+            },
+            {
+              type: jsPsychVideoButtonResponse,
+              stimulus: function(){
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if(last_trial_correct){
+                  return [
+                    'videos/m1- correct.mp4'
+                  ]; // the parameter value has to be returned from the function
+                } else {
+                  return [
+                    'videos/m1-wrong.mp4'
+                  ]; // the parameter value has to be returned from the function
+                }
+              },
+              choices: function(){
+                return jsPsych.data.get().last(1).values()[0].choices
+                },
+              button_html: '<img src="%choice%" />',
+              response_allowed_while_playing: false,
+              trial_ends_after_video: true
+            }
+          ],
+        timeline_variables: [
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
+          ],
+        repetitions: 1,
+        randomize_order: true
+      }
 
+    var day2 = {
+        timeline: [
+            {
+                type: jsPsychHtmlButtonResponse,
+                stimulus: '<img src="img/mimg330-1.png"></img>',
+                choices: [
+                            jsPsych.timelineVariable('choiceA'),
+                            jsPsych.timelineVariable('choiceB'),
+                            jsPsych.timelineVariable('choiceC'),
+                            jsPsych.timelineVariable('choiceD')
+                          ],
+                button_html: '<img src="%choice%" />',
+                save_trial_parameters: {
+                  choices: true
+                },
+                on_finish: function(data){
+                  // Score the keyboard response as correct or incorrect.
+                  data.correct_response = jsPsych.timelineVariable("correct_response");
+                  data.correct = data.correct_response.includes(data.response);
+                  //data.test1 = data.set;
+                }
+            },
+            {
+              type: jsPsychVideoButtonResponse,
+              stimulus: function(){
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if(last_trial_correct){
+                  return [
+                    'videos/m1- correct.mp4'
+                  ]; // the parameter value has to be returned from the function
+                } else {
+                  return [
+                    'videos/m1-wrong.mp4'
+                  ]; // the parameter value has to be returned from the function
+                }
+              },
+              choices: function(){
+                return jsPsych.data.get().last(1).values()[0].choices
+                },
+              button_html: '<img src="%choice%" />',
+              response_allowed_while_playing: false,
+              trial_ends_after_video: true
+            }
+          ],
+        timeline_variables: [
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
+          ],
+        repetitions: 1,
+        randomize_order: true
+      }
+
+    var day3 = {
+        timeline: [
+            {
+                type: jsPsychHtmlButtonResponse,
+                stimulus: '<img src="img/mimg330-1.png"></img>',
+                choices: [
+                            jsPsych.timelineVariable('choiceA'),
+                            jsPsych.timelineVariable('choiceB'),
+                            jsPsych.timelineVariable('choiceC'),
+                            jsPsych.timelineVariable('choiceD')
+                          ],
+                button_html: '<img src="%choice%" />',
+                save_trial_parameters: {
+                  choices: true
+                },
+                on_finish: function(data){
+                  // Score the keyboard response as correct or incorrect.
+                  data.correct_response = jsPsych.timelineVariable("correct_response");
+                  data.correct = data.correct_response.includes(data.response);
+                  //data.test1 = data.set;
+                }
+            },
+            {
+              type: jsPsychVideoButtonResponse,
+              stimulus: function(){
+                var last_trial_correct = jsPsych.data.get().last(1).values()[0].correct;
+                if(last_trial_correct){
+                  return [
+                    'videos/m1- correct.mp4'
+                  ]; // the parameter value has to be returned from the function
+                } else {
+                  return [
+                    'videos/m1-wrong.mp4'
+                  ]; // the parameter value has to be returned from the function
+                }
+              },
+              choices: function(){
+                return jsPsych.data.get().last(1).values()[0].choices
+                },
+              button_html: '<img src="%choice%" />',
+              response_allowed_while_playing: false,
+              trial_ends_after_video: true
+            }
+          ],
+        timeline_variables: [
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: [0,1,2,3]}, //no response is correct
+            {choiceA: 'img/f1a.png', choiceB: 'img/f1b.png', choiceC: 'img/f2a.png', choiceD: 'img/f2b.png', correct_response: []}, //all responses are correct
+            {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
+          ],
+        repetitions: 1,
+        randomize_order: true
+      }
+
+  var feedback = {
+    timeline: [
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>Let's see how you did in the game.</p>"
+      },
+      {
+        type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/monster-bedtime.mp4'
+          ],
+          choices: [],
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+      }
+    ]
+  }
+
+  var survey = {
+      timeline: [
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: "<p>Did you feel like you got better at the game?</p>"
+        }
+      ]
+  }
 
   //end message//
   var ending = {
@@ -153,7 +309,13 @@
     fullscreen_on,
     demo,
     day1,
-    //,
+    night,
+    day2,
+    night,
+    day3,
+    night,
+    feedback,
+    survey,
     ending
   ]);
   </script>
