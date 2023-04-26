@@ -19,13 +19,15 @@
     questions: [
       {prompt: "Participant name", name: "participant_name"},
       {prompt: "Participant ID", name: "participant_ID"}
-    ]
+    ],
+    data: {task_part: 'id-question'}
   }
 
-  var fullscreen_on = {
+  var fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
-    message: "<p>Let's play the shape game with Monster!</p>"
+    message: "<p>Let's play the shape game with Monster!</p>",
+    data: {task_part: 'fullscreen'}
   };
 
   var demo = {
@@ -80,7 +82,8 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: "<p>Your goal is to feed Monster as many shapes it likes to eat as you can and get as many stars as you can.</p>",
         },
-      ]
+      ],
+      data: {task_part: 'demo'}
     }
 
     var night = {
@@ -90,7 +93,8 @@
         ],
         choices: [],
         response_allowed_while_playing: false,
-        trial_ends_after_video: true
+        trial_ends_after_video: true,
+        data: {task_part: 'night'}
     }
 
     var day1 = {
@@ -148,7 +152,8 @@
             {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
           ],
         repetitions: 1,
-        randomize_order: true
+        randomize_order: true,
+        data: {task_part: 'day-1'}
       }
 
     var day2 = {
@@ -206,7 +211,8 @@
             {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
           ],
         repetitions: 1,
-        randomize_order: true
+        randomize_order: true,
+        data: {task_part: 'day-2'}
       }
 
     var day3 = {
@@ -264,7 +270,8 @@
             {choiceA: 'img/f3a.png', choiceB: 'img/f3b.png', choiceC: 'img/f4a.png', choiceD: 'img/f4b.png', correct_response: []} //no response is correct
           ],
         repetitions: 1,
-        randomize_order: true
+        randomize_order: true,
+        data: {task_part: 'day-3'}
       }
 
   var feedback = {
@@ -272,6 +279,11 @@
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: "<p>Let's see how you did in the game.</p>"
+      },
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<img src="img/star_small_0gold3.png"></img>',
+        button_html: '<img src="%choice%" />',
       },
       {
         type: jsPsychVideoButtonResponse,
@@ -282,7 +294,8 @@
           response_allowed_while_playing: false,
           trial_ends_after_video: true
       }
-    ]
+    ],
+    data: {task_part: 'summary-feedback'}
   }
 
   var survey = {
@@ -291,7 +304,8 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: "<p>Did you feel like you got better at the game?</p>"
         }
-      ]
+      ],
+      data: {task_part: 'exit-survey'}
   }
 
   //end message//
@@ -299,14 +313,15 @@
     type: jsPsychHtmlKeyboardResponse,
     stimulus: "<p>Thank you for participating in this game!</p>",
     on_start: function(data){
-      var file_name = 'LT_' + '.csv';
+      var id = jsPsych.data.get().filter({task_part: 'id-question'}).values()[0].response['participant_ID'];
+      var file_name = 'LT_' + id + '.csv';
       jsPsych.data.get().localSave('csv',file_name); // Saves a file on the computer running the experiment. First localSave argument is the format, second is the filename.
     }
   };
 
   jsPsych.run([
     participant_info,
-    fullscreen_on,
+    fullscreen,
     demo,
     day1,
     night,
