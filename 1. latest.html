@@ -3,6 +3,7 @@
   <head>
     <title>My experiment</title>
     <script src="jspsych-7.0/dist/jspsych.js"></script>
+    <script src="jspsych-7.0/dist/plugin-preload.js"></script>
     <script src="jspsych-7.0/dist/plugin-fullscreen.js"></script>
     <script src="jspsych-7.0/dist/plugin-survey-text.js"></script>
     <script src="jspsych-7.0/dist/plugin-html-button-response.js"></script>
@@ -13,6 +14,11 @@
   <body></body>
   <script>
   const jsPsych = initJsPsych();
+
+  var preload = {
+    type: jsPsychPreload,
+    auto_preload: true
+  }
 
   var participant_info = {
     type: jsPsychSurveyText,
@@ -63,6 +69,7 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: "<p>There are other shapes that Monster doesn't like to eat.</p>" +
                     "<p>When you feed it a shape it doesn't like, Monster won't give you a star.</p>",
+          trial_duration: 1000
         },
         {
           type: jsPsychHtmlButtonResponse,
@@ -83,6 +90,7 @@
         {
           type: jsPsychHtmlKeyboardResponse,
           stimulus: "<p>Your goal is to feed Monster as many shapes it likes to eat as you can and get as many stars as you can.</p>",
+          trial_duration: 1000
         },
       ],
       data: {task_part: 'demo'}
@@ -280,12 +288,13 @@
     timeline: [
       {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: "<p>Let's see how you did in the game.</p>"
+        stimulus: "<p>Let's see how you did in the game.</p>",
+        trial_duration: 1000
       },
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: '<img src="img/star_small_0gold3.png"></img>',
-        button_html: '<img src="%choice%" />',
+        trial_duration: 1000
       },
       {
         type: jsPsychVideoButtonResponse,
@@ -322,6 +331,7 @@
   };
 
   jsPsych.run([
+    preload,
     participant_info,
     fullscreen,
     demo,
