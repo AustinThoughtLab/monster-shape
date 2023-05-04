@@ -9,6 +9,8 @@
     <script src="jspsych-7.0/dist/plugin-html-button-response.js"></script>
     <script src="jspsych-7.0/dist/plugin-html-keyboard-response.js"></script>
     <script src="jspsych-7.0/dist/plugin-video-button-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-survey-multi-choice.js"></script>
+    <script src="jspsych-7.0/dist/plugin-html-button-response2.js"></script>
     <link href="jspsych-7.0/dist/jspsych.css" rel="stylesheet" type="text/css" />
   </head>
   <body></body>
@@ -29,6 +31,65 @@
     data: {task_part: 'id-question'}
   }
 
+  var version = {
+    type: jsPsychSurveyMultiChoice,
+    questions: [
+      {
+        prompt: "Condition",
+        name: 'condition',
+        options: ['LP','NLP'],
+        required: true
+      },
+      {
+        prompt: "Counterbalancing",
+        name: 'counterbalancing',
+        options: ['1','2'],
+        required: true
+      }
+    ],
+    data: {task_part: 'version'},
+  on_finish: function(data){
+    var condition = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['condition'];
+    var counterbalancing = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['counterbalancing'];
+    var version = condition +  "_" + counterbalancing;
+    jsPsych.data.addProperties({version: version});
+  }
+  };
+
+  var vidtest1 = {
+    type: jsPsychVideoButtonResponse,
+      stimulus: [
+        function(){
+          var condition = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['condition'];
+          var counterbalancing = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['counterbalancing'];
+          //var videoname = "videos/night1_" + condition +  "_" + counterbalancing + ".mp4";
+          var videoname = "videos/night1_" + jsPsych.data.get().select('version').values[0] + ".mp4";
+          return videoname
+        }
+      ],
+      choices: [],
+      response_allowed_while_playing: false,
+      trial_ends_after_video: true,
+      data: {task_part: 'vidtest1'}
+  }
+
+  var vidtest2 = {
+    type: jsPsychVideoButtonResponse,
+      stimulus: [
+        function(){
+          var condition = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['condition'];
+          var counterbalancing = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['counterbalancing'];;
+          var videoname = "videos/night1_" + condition + "_" + counterbalancing + ".mp4";
+          return videoname
+        }
+      ],
+      choices: [],
+      response_allowed_while_playing: false,
+      trial_ends_after_video: true,
+      data: {task_part: 'vidtest1'}
+  }
+
+
   var fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
@@ -40,19 +101,15 @@
       timeline: [
         {
           type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>bla bla bla</p>",
-          trial_duration: 1000
-        },
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>There are some shapes that Monster likes to eat.</p>" +
-                    "<p>When you feed it a shape it likes, Monster gives you a star.</p>",
-          trial_duration: 1000
+          stimulus: "<p>In this game, you’re going to find out which shapes Monster likes to eat.</p>" +
+          "<p>There are some shapes that Monster likes to eat and there are other shapes he doesn't like to eat." +
+          "<p>When you feed Monster a shape he likes, he will say 'Mmm' and give you a star, like this:</p>",
+          trial_duration: 6000
         },
         {
           type: jsPsychHtmlButtonResponse,
           stimulus: '<img src="img/mimg330-1.png"></img>',
-          choices: ['img/f1a.png','img/f1b.png'],
+          choices: ['img/shapes/01.png'],
           button_html: '<img src="%choice%" />',
         },
         {
@@ -60,22 +117,37 @@
           stimulus: [
             'videos/m1- correct.mp4'
           ],
-          choices: ['img/f1a.png','img/f1b.png'],
+          choices: ['img/shapes/01.png'],
           button_html: '<img src="%choice%" />',
           response_allowed_while_playing: false,
           trial_ends_after_video: true
         },
         {
           type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>There are other shapes that Monster doesn't like to eat.</p>" +
-                    "<p>When you feed it a shape it doesn't like, Monster won't give you a star.</p>",
-          trial_duration: 1000
+          stimulus: "<p>When you feed Monster a shape he doesn't like, he will say ‘Yuck’ and not give you a star, like this:</p>",
+          trial_duration: 5000
         },
         {
           type: jsPsychHtmlButtonResponse,
           stimulus: '<img src="img/mimg330-1.png"></img>',
-          choices: ['img/f1a.png','img/f1b.png'],
+          choices: ['img/shapes/02.png'],
           button_html: '<img src="%choice%" />',
+        },
+        {
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/m1-wrong.mp4'
+          ],
+          choices: ['img/shapes/02.png'],
+          button_html: '<img src="%choice%" />',
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+        },
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: "<p>Monster eats all day until his bedtime.</p>" +
+          "<p>When Monster goes to bed, we'll see how many stars you got, like this:</p>",
+          trial_duration: 5000
         },
         {
           type: jsPsychVideoButtonResponse,
@@ -89,22 +161,14 @@
         },
         {
           type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>Your goal is to feed Monster as many shapes it likes to eat as you can and get as many stars as you can.</p>",
-          trial_duration: 1000
+          stimulus: "<p>Your job is to feed Monster as many of the shapes he likes as you can</p>" +
+          "<p>and get as many stars as you can each day before Monster’s bedtime.</p>" +
+          "<p>Try to feed him all of his favorite shapes!</p>" +
+          "<p>Do you want to hear the instructions again or are you ready to start?</p>",
+          trial_duration: 8000
         },
       ],
       data: {task_part: 'demo'}
-    }
-
-    var night = {
-      type: jsPsychVideoButtonResponse,
-        stimulus: [
-          'videos/monster-bedtime.mp4'
-        ],
-        choices: [],
-        response_allowed_while_playing: false,
-        trial_ends_after_video: true,
-        data: {task_part: 'night'}
     }
 
     var day1 = {
@@ -166,6 +230,17 @@
         data: {task_part: 'day-1'}
       }
 
+    var night1 = {
+      type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/night1_nlp.mp4'
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true,
+        data: {task_part: 'night1'}
+    }
+
     var day2 = {
         timeline: [
             {
@@ -211,7 +286,7 @@
             }
           ],
         timeline_variables: [
-            {choiceA: 'img/shapes/25b.png', choiceB: 'img/shapes/14o.png', choiceC: 'img/shapes/36g.png', choiceD: 'img/shapes/13r.png', correct_response: [0,1,2,3]}, //all responses are correct
+            {choiceA: 'img/shapes/25b.png', choiceB: 'img/shapes/14o.png', choiceC: 'img/shapes/36g.png', choiceD: 'img/shapes/53r.png', correct_response: [0,1,2,3]}, //all responses are correct
             {choiceA: 'img/shapes/55r.png', choiceB: 'img/shapes/26g.png', choiceC: 'img/shapes/43b.png', choiceD: 'img/shapes/74o.png', correct_response: [0,1,2,3]}, //all responses are correct
             {choiceA: 'img/shapes/53g.png', choiceB: 'img/shapes/46r.png', choiceC: 'img/shapes/85o.png', choiceD: 'img/shapes/74b.png', correct_response: [0,1,2,3]}, //all responses are correct
             {choiceA: 'img/shapes/44g.png', choiceB: 'img/shapes/33r.png', choiceC: 'img/shapes/65b.png', choiceD: 'img/shapes/16o.png', correct_response: [0,1,2,3]}, //all responses are correct
@@ -224,6 +299,17 @@
         randomize_order: true,
         data: {task_part: 'day-2'}
       }
+
+    var night2 = {
+      type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/night2_nlp.mp4'
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true,
+        data: {task_part: 'night2'}
+    }
 
     var day3 = {
         timeline: [
@@ -284,17 +370,70 @@
         data: {task_part: 'day-3'}
       }
 
-  var feedback = {
+    var night3 = {
+      type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/night3_nlp.mp4'
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true,
+        data: {task_part: 'night3'}
+    }
+
+  var survey_intro = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Now I have some questions for you.</p>',
+    choices: ['Continue']
+  }
+
+  var survey = {
+      timeline: [
+        {
+          type: jsPsychSurveyMultiChoice,
+          questions: [
+            {
+              prompt: "How much did you like the game?",
+              name: 'liked',
+              options: ['A lot', 'A little', 'Not at all'],
+              required: false
+            },
+            {
+              prompt: "How much did you learn about which shapes Monster likes to eat?",
+              name: 'learned',
+              options: ['A lot', 'A little', 'Not at all'],
+              required: false
+            },
+            {
+              prompt: "How many stars did you get throughout the game?",
+              name: 'stars',
+              options: ['More each day', 'Fewer each day', 'Same each day'],
+              required: false
+            }
+          ],
+        },
+        {
+          type: jsPsychSurveyText,
+          questions: [
+            {
+              prompt: "Did you notice anything interesting about the game?",
+              name: "noticed"
+            },
+          ],
+        }
+      ],
+      data: {task_part: 'exit-survey'}
+  }
+
+  var options = {
     timeline: [
       {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: "<p>Let's see how you did in the game.</p>",
-        trial_duration: 1000
-      },
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: '<img src="img/star_small_0gold3.png"></img>',
-        trial_duration: 1000
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Now, we’re going to choose a new game to play.</p>' +
+        '<p>We’re going to look at different games, and for each set of games</p>' +
+        '<p>you’ll choose the one you want to play the most.</p>' +
+        '<p>Here are the options:</p>',
+        choices: ['Continue']
       },
       {
         type: jsPsychVideoButtonResponse,
@@ -304,19 +443,119 @@
           choices: [],
           response_allowed_while_playing: false,
           trial_ends_after_video: true
-      }
+      },
+      {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Alright, here are the next three options:</p>',
+        choices: ['Continue']
+      },
+      {
+        type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/monster-bedtime.mp4'
+          ],
+          choices: [],
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+      },
+      {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>Alright, here are the last three options:</p>',
+        choices: ['Continue']
+      },
+      {
+        type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/monster-bedtime.mp4'
+          ],
+          choices: [],
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+      },
     ],
-    data: {task_part: 'summary-feedback'}
+    data: {task_part: 'options'}
   }
 
-  var survey = {
+  var hiding_demo = {
+    timeline: [
+      {
+        type: jsPsychHtmlButtonResponse2,
+        stimulus: '',
+        choices: ['img/bush-left.png','img/bush-middle.png','img/bush-right.png'],
+        button_html: '<img src="%choice%" />',
+      },
+      {
+        type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/bush-monster-left.mp4'
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
+      },
+    ],
+    repetitions: 1,
+    data: {task_part: 'hiding_demo'}
+  }
+
+  var hiding_game = {
+    timeline: [
+      {
+        type: jsPsychHtmlButtonResponse2,
+        stimulus: '',
+        choices: ['img/bush-left.png','img/bush-middle.png','img/bush-right.png'],
+        button_html: '<img src="%choice%" />',
+      },
+      {
+        type: jsPsychVideoButtonResponse,
+        stimulus: [
+          'videos/bush-monster-left.mp4'
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
+      },
+    ],
+    repetitions: 3,
+    data: {task_part: 'hiding_game'}
+  }
+
+  var hiding_survey = {
       timeline: [
         {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>Did you feel like you got better at the game?</p>"
+          type: jsPsychSurveyMultiChoice,
+          questions: [
+            {
+              prompt: "How much did you like the game?",
+              name: 'liked',
+              options: ['A lot', 'A little', 'Not at all'],
+              required: false
+            },
+            {
+              prompt: "How much did you learn about which shapes Monster likes to eat?",
+              name: 'learned',
+              options: ['A lot', 'A little', 'Not at all'],
+              required: false
+            },
+            {
+              prompt: "How many stars did you get throughout the game?",
+              name: 'stars',
+              options: ['More each day', 'Fewer each day', 'Same each day'],
+              required: false
+            }
+          ],
+        },
+        {
+          type: jsPsychSurveyText,
+          questions: [
+            {
+              prompt: "Did you notice anything interesting about the game?",
+              name: "noticed"
+            },
+          ],
         }
       ],
-      data: {task_part: 'exit-survey'}
+      data: {task_part: 'hiding-survey'}
   }
 
   //end message//
@@ -333,16 +572,22 @@
   jsPsych.run([
     preload,
     participant_info,
-    fullscreen,
+    version,
+    vidtest1,
+    //fullscreen,
     demo,
     day1,
-    night,
-    day2,
-    night,
-    day3,
-    night,
-    feedback,
+    //night1,
+    //day2,
+    //night2,
+    //day3,
+    night3,
+    survey_intro,
     survey,
+    //options,
+    hiding_demo,
+    hiding_game,
+    hiding_survey,
     ending
   ]);
   </script>
