@@ -135,18 +135,17 @@
           stimulus: [
             'videos/night0.mp4'
           ],
-          choices: ['img/f1a.png','img/f1b.png'],
-          button_html: '<img src="%choice%" />',
+          choices: [],
           response_allowed_while_playing: false,
           trial_ends_after_video: true
         },
         {
-          type: jsPsychHtmlKeyboardResponse,
+          type: jsPsychHtmlButtonResponse,
           stimulus: "<p>Your job is to feed Monster as many of the shapes he likes as you can</p>" +
           "<p>and get as many stars as you can each day before Monster’s bedtime.</p>" +
           "<p>Try to feed him all of his favorite shapes!</p>" +
           "<p>Do you want to hear the instructions again or are you ready to start?</p>",
-          trial_duration: 8000
+          choices: ["Repeat","Continue"],
         },
       ],
       data: {task_part: 'demo'}
