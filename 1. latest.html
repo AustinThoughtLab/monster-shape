@@ -689,7 +689,7 @@
     data: {task_part: 'hiding_demo'}
   }
 
-  var hiding_1 = {
+  var hiding_correct = {
     timeline: [
       {
         type: jsPsychHtmlButtonResponse2,
@@ -700,20 +700,112 @@
       {
         type: jsPsychVideoButtonResponse,
         stimulus: [
-          'videos/bush-monster-left.mp4'
+          function(){
+            var last = jsPsych.data.get().last(1).values()[0].response;
+            if(last==0){
+              return 'videos/bush-monster-left.mp4'
+            } else if(last==1){
+              return 'videos/bush-monster-middle.mp4'
+            } else if(last==2){
+              return 'videos/bush-monster-right.mp4'
+            }
+          }
         ],
         choices: [],
         response_allowed_while_playing: false,
         trial_ends_after_video: true
+      }
+    ]
+  }
+
+  var hiding_incorrect = {
+    timeline: [
+      {
+        type: jsPsychHtmlButtonResponse2,
+        stimulus: '',
+        choices: ['img/bush-left.png','img/bush-middle.png','img/bush-right.png'],
+        button_html: '<img src="%choice%" />',
       },
-    ],
-    repetitions: 3,
+      {
+        type: jsPsychVideoButtonResponse,
+        stimulus: [
+          function(){
+            var last = jsPsych.data.get().last(1).values()[0].response;
+            var randomNumber = Math.random();
+            if(last==0 & randomNumber <= 0.5){
+              return 'videos/bush-monster-middle.mp4'
+            } else if(last==0 & randomNumber > 0.5){
+              return 'videos/bush-monster-right.mp4'
+            } else if(last==1 & randomNumber <= 0.5){
+              return 'videos/bush-monster-left.mp4'
+            } else if(last==1 & randomNumber > 0.5){
+              return 'videos/bush-monster-right.mp4'
+            } else if(last==2 & randomNumber <= 0.5){
+              return 'videos/bush-monster-left.mp4'
+            } else if(last==2 & randomNumber > 0.5){
+              return 'videos/bush-monster-middle.mp4'
+            }
+          }
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
+      }
+    ]
+  }
+
+  var hiding_1 = {
+    timeline: jsPsych.randomization.shuffle([
+        hiding_correct,
+        hiding_correct,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect
+      ]),
+    repetitions: 1,
+    randomize_order: true,
     data: {task_part: 'hiding_1'}
+  }
+  var hiding_2 = {
+    timeline: jsPsych.randomization.shuffle([
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect,
+        hiding_incorrect
+      ]),
+    repetitions: 1,
+    randomize_order: true,
+    data: {task_part: 'hiding_2'}
+  }
+
+  var hiding_3 = {
+    timeline: jsPsych.randomization.shuffle([
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_correct,
+        hiding_incorrect,
+        hiding_incorrect
+      ]),
+    repetitions: 1,
+    randomize_order: true,
+    data: {task_part: 'hiding_3'}
   }
 
   var hiding_game = {
     timeline: [
       hiding_1,
+      hiding_2,
+      hiding_3,
     ],
     repetitions: 1
   }
