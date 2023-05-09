@@ -158,7 +158,7 @@
             {
                 type: jsPsychHtmlButtonResponse,
                 stimulus: function(){
-                  return '<img src="img/char1_1.png"></img>'
+                  return '<img src="img/char1_' + jsPsych.data.get().select('counterbalancing').values[0] + '.png"></img>'
                 },
                 choices: [
                             jsPsych.timelineVariable('choiceA'),
@@ -219,7 +219,7 @@
           {
               type: jsPsychHtmlButtonResponse,
               stimulus: function(){
-                return '<img src="img/char1_1.png"></img>'
+                return '<img src="img/char1_' + jsPsych.data.get().select('counterbalancing').values[0] + '.png"></img>'
               },
               choices: [
                           jsPsych.timelineVariable('choiceA'),
@@ -539,7 +539,8 @@
     }
 
     var shape_game = {
-      timeline: [shape_demo,
+      timeline: [
+        shape_demo,
         day1,
         day2,
         day3
@@ -688,7 +689,7 @@
     data: {task_part: 'hiding_demo'}
   }
 
-  var hiding_game = {
+  var hiding_1 = {
     timeline: [
       {
         type: jsPsychHtmlButtonResponse2,
@@ -707,7 +708,14 @@
       },
     ],
     repetitions: 3,
-    data: {task_part: 'hiding_game'}
+    data: {task_part: 'hiding_1'}
+  }
+
+  var hiding_game = {
+    timeline: [
+      hiding_1,
+    ],
+    repetitions: 1
   }
 
   var hiding_survey = {
@@ -760,14 +768,14 @@
   };
 
   jsPsych.run([
-    preload,
-    participant_info,
-    version,
-    fullscreen,
-    shape_game,
-    survey_intro,
-    survey,
-    options,
+    //preload,
+    //participant_info,
+    //version,
+    //fullscreen,
+    //shape_game,
+    //survey_intro,
+    //survey,
+    //options,
     hiding_demo,
     hiding_game,
     hiding_survey,
