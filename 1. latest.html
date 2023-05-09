@@ -801,15 +801,6 @@
     data: {task_part: 'hiding_3'}
   }
 
-  var hiding_game = {
-    timeline: [
-      hiding_1,
-      hiding_2,
-      hiding_3,
-    ],
-    repetitions: 1
-  }
-
   var hiding_survey = {
       timeline: [
         {
@@ -848,6 +839,17 @@
       data: {task_part: 'hiding-survey'}
   }
 
+  var hiding_game = {
+    timeline: [
+      hiding_demo,
+      hiding_1,
+      hiding_2,
+      hiding_3,
+      hiding_survey
+    ],
+    repetitions: 1
+  }
+
   //end message//
   var ending = {
     type: jsPsychHtmlKeyboardResponse,
@@ -868,9 +870,7 @@
     survey_intro,
     survey,
     options,
-    hiding_demo,
     hiding_game,
-    hiding_survey,
     ending
   ]);
   </script>
