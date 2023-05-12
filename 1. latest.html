@@ -5,6 +5,7 @@
     <script src="jspsych-7.0/dist/jspsych.js"></script>
     <script src="jspsych-7.0/dist/plugin-preload.js"></script>
     <script src="jspsych-7.0/dist/plugin-fullscreen.js"></script>
+    <script src="jspsych-7.0/dist/plugin-survey.js"></script>
     <script src="jspsych-7.0/dist/plugin-survey-text.js"></script>
     <script src="jspsych-7.0/dist/plugin-html-button-response.js"></script>
     <script src="jspsych-7.0/dist/plugin-html-keyboard-response.js"></script>
@@ -32,29 +33,41 @@
   }
 
   var version = {
-    type: jsPsychSurveyMultiChoice,
-    questions: [
-      {
-        prompt: "Condition",
-        name: 'condition',
-        options: ['LP','NLP'],
-        required: true
-      },
-      {
-        prompt: "Counterbalancing",
-        name: 'counterbalancing',
-        options: ['1','2'],
-        required: true
-      }
+    type: jsPsychSurvey,
+    pages: [
+      [
+        {
+          type: 'multi-choice',
+          prompt: "Condition",
+          name: 'condition',
+          options: ['LP','NLP'],
+          required: true
+        },
+        {
+          type: 'multi-choice',
+          prompt: "Counterbalancing",
+          name: 'counterbalancing',
+          options: ['1','2'],
+          required: true
+        },
+        {
+          type: 'drop-down',
+          prompt: 'Order',
+          name: 'order',
+          options: [1,2,3],
+          required: true
+        }
+      ]
     ],
     data: {task_part: 'version'},
-  on_finish: function(data){
-    var condition = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['condition'];
-    var counterbalancing = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['counterbalancing'];
-    var version = condition +  "_" + counterbalancing;
-    jsPsych.data.addProperties({condition: condition, counterbalancing: counterbalancing, version: version});
+    on_finish: function(data){
+      var condition = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['condition'];
+      var counterbalancing = jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['counterbalancing'];
+      var order = "o" + jsPsych.data.get().filter({task_part: 'version'}).values()[0].response['order'];
+      var version = condition +  "_" + counterbalancing;
+      jsPsych.data.addProperties({condition: condition, counterbalancing: counterbalancing, order: order, version: version});
+    }
   }
-  };
 
   var fullscreen = {
     type: jsPsychFullscreen,
@@ -73,19 +86,26 @@
   var shape_demo = {
       timeline: [
         {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>In this game, you’re going to find out which shapes Monster likes to eat.</p>" +
-          "<p>There are some shapes that Monster likes to eat and there are other shapes he doesn't like to eat." +
-          "<p>When you feed Monster a shape he likes, he will say 'Mmm' and give you a star, like this:</p>",
-          trial_duration: 6000
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            function(){
+              return 'videos/shape_inst1_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+            }
+          ],
+          choices: [],
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
         },
         {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: function(){
-            return '<img src="img/char1_' + jsPsych.data.get().select('counterbalancing').values[0] + '.png"></img>'
-          },
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            function(){
+              return 'videos/shape_inst2_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+            }
+          ],
           choices: ['img/shapes/01.png'],
           button_html: '<img src="%choice%" />',
+          response_allowed_while_playing: false
         },
         {
           type: jsPsychVideoButtonResponse,
@@ -100,17 +120,15 @@
           trial_ends_after_video: true
         },
         {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>When you feed Monster a shape he doesn't like, he will say ‘Yuck’ and not give you a star, like this:</p>",
-          trial_duration: 5000
-        },
-        {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: function(){
-            return '<img src="img/char1_' + jsPsych.data.get().select('counterbalancing').values[0] + '.png"></img>'
-          },
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            function(){
+              return 'videos/shape_inst3_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+            }
+          ],
           choices: ['img/shapes/02.png'],
           button_html: '<img src="%choice%" />',
+          response_allowed_while_playing: false
         },
         {
           type: jsPsychVideoButtonResponse,
@@ -125,16 +143,21 @@
           trial_ends_after_video: true
         },
         {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: "<p>Monster eats all day until his bedtime.</p>" +
-          "<p>When Monster goes to bed, we'll see how many stars you got, like this:</p>",
-          trial_duration: 5000
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            function(){
+              return 'videos/shape_inst4_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+            }
+          ],
+          choices: [],
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
         },
         {
           type: jsPsychVideoButtonResponse,
           stimulus: [
             function(){
-              return 'videos/night0_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+              return 'videos/shape_inst5_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
             }
           ],
           choices: [],
@@ -143,12 +166,10 @@
         },
         {
           type: jsPsychHtmlButtonResponse,
-          stimulus: "<p>Your job is to feed Monster as many of the shapes he likes as you can</p>" +
-          "<p>and get as many stars as you can each day before Monster’s bedtime.</p>" +
-          "<p>Try to feed him all of his favorite shapes!</p>" +
-          "<p>Do you want to hear the instructions again or are you ready to start?</p>",
+          stimulus: "<p> Do you want to hear the instructions again or are you ready to play the game?</p>",
           choices: ["Repeat","Continue"],
-        },
+          response_allowed_while_playing: false
+        }
       ],
       data: {task_part: 'demo'}
     }
@@ -603,12 +624,14 @@
       },
       {
         type: jsPsychVideoButtonResponse,
-          stimulus: [
-            'videos/night0_1.mp4'
-          ],
-          choices: [],
-          response_allowed_while_playing: false,
-          trial_ends_after_video: true
+        stimulus: [
+          function(){
+            return 'videos/optA_' + jsPsych.data.get().select('order').values[0] + '_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+          }
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
       },
       {
         type: jsPsychHtmlButtonResponse2,
@@ -623,12 +646,14 @@
       },
       {
         type: jsPsychVideoButtonResponse,
-          stimulus: [
-            'videos/night0_1.mp4'
-          ],
-          choices: [],
-          response_allowed_while_playing: false,
-          trial_ends_after_video: true
+        stimulus: [
+          function(){
+            return 'videos/optB_' + jsPsych.data.get().select('order').values[0] + '_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+          }
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
       },
       {
         type: jsPsychHtmlButtonResponse2,
@@ -643,12 +668,14 @@
       },
       {
         type: jsPsychVideoButtonResponse,
-          stimulus: [
-            'videos/night0_1.mp4'
-          ],
-          choices: [],
-          response_allowed_while_playing: false,
-          trial_ends_after_video: true
+        stimulus: [
+          function(){
+            return 'videos/optC_' + jsPsych.data.get().select('order').values[0] + '_' + jsPsych.data.get().select('counterbalancing').values[0] + '.mp4'
+          }
+        ],
+        choices: [],
+        response_allowed_while_playing: false,
+        trial_ends_after_video: true
       },
       {
         type: jsPsychHtmlButtonResponse2,
@@ -678,7 +705,7 @@
       {
         type: jsPsychVideoButtonResponse,
         stimulus: [
-          'videos/bush-monster-left.mp4'
+          'videos/bush_left_1.mp4'
         ],
         choices: [],
         response_allowed_while_playing: false,
@@ -703,11 +730,11 @@
           function(){
             var last = jsPsych.data.get().last(1).values()[0].response;
             if(last==0){
-              return 'videos/bush-monster-left.mp4'
+              return 'videos/bush_left_1.mp4'
             } else if(last==1){
-              return 'videos/bush-monster-middle.mp4'
+              return 'videos/bush_middle_1.mp4'
             } else if(last==2){
-              return 'videos/bush-monster-right.mp4'
+              return 'videos/bush_right_1.mp4'
             }
           }
         ],
@@ -733,17 +760,17 @@
             var last = jsPsych.data.get().last(1).values()[0].response;
             var randomNumber = Math.random();
             if(last==0 & randomNumber <= 0.5){
-              return 'videos/bush-monster-middle.mp4'
+              return 'videos/bush_middle_1.mp4'
             } else if(last==0 & randomNumber > 0.5){
-              return 'videos/bush-monster-right.mp4'
+              return 'videos/bush_right_1.mp4'
             } else if(last==1 & randomNumber <= 0.5){
-              return 'videos/bush-monster-left.mp4'
+              return 'videos/bush_left_1.mp4'
             } else if(last==1 & randomNumber > 0.5){
-              return 'videos/bush-monster-right.mp4'
+              return 'videos/bush_right_1.mp4'
             } else if(last==2 & randomNumber <= 0.5){
-              return 'videos/bush-monster-left.mp4'
+              return 'videos/bush_left_1.mp4'
             } else if(last==2 & randomNumber > 0.5){
-              return 'videos/bush-monster-middle.mp4'
+              return 'videos/bush_middle_1.mp4'
             }
           }
         ],
