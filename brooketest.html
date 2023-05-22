@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jatos.js"></script>
+    <script src="jspsych-7.0/dist/jspsych.js"></script>
+    <script src="jspsych-7.0/dist/plugin-fullscreen.js"></script>
+    <script src="jspsych-7.0/dist/plugin-survey-text.js"></script>
+    <script src="jspsych-7.0/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych-7.0/dist/plugin-video-button-response.js"></script>
+    <link href="jspsych-7.0/dist/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="jspsych-target"></div>
+  </body>
+  <script>
+
+  /* initialize jsPsych */
+  var jsPsych = initJsPsych({
+    on_finish: () => jatos.endStudy(jsPsych.data.get().json())
+  });
+
+  /* create the experiment timeline */
+  var timeline = [];
+
+
+  var participant_info = {
+    type: jsPsychSurveyText,
+    questions: [
+      {prompt: "Participant name", name: "participant_name"},
+      {prompt: "Participant ID", name: "participant_ID"}
+    ]
+  }
+
+  timeline.push(participant_info);
+
+
+  var demo = {
+      timeline: [
+        {
+          type: jsPsychHtmlButtonResponse,
+          stimulus: '<img src="img/mimg330-1.png"></img>',
+          choices: ['img/f1a.png','img/f1b.png'],
+          button_html: '<img src="%choice%" />',
+        },
+        {
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/m1- correct.mp4'
+          ],
+          choices: ['img/f1a.png','img/f1b.png'],
+          button_html: '<img src="%choice%" />',
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+        },
+        {
+          type: jsPsychHtmlButtonResponse,
+          stimulus: '<img src="img/mimg330-1.png"></img>',
+          choices: ['img/f1a.png','img/f1b.png'],
+          button_html: '<img src="%choice%" />',
+        },
+        {
+          type: jsPsychVideoButtonResponse,
+          stimulus: [
+            'videos/m1-wrong.mp4'
+          ],
+          choices: ['img/f1a.png','img/f1b.png'],
+          button_html: '<img src="%choice%" />',
+          response_allowed_while_playing: false,
+          trial_ends_after_video: true
+        },
+      ]
+    }
+
+    timeline.push(demo);
+  /* ITS ALIVEEEEE */
+  /* Changed for JATOS: wrapped jsPsych.init with jatos.onLoad */
+  /* start the experiment */
+  jatos.onLoad(() => {
+    jatos.addAbortButton();
+    jsPsych.run(timeline);
+    });
+  </script>
+</html>
