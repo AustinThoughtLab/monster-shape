@@ -18,10 +18,28 @@
   <script>
   const jsPsych = initJsPsych();
 
+  var videoPaths = [
+    'video/shape_inst1_C1.mp4',
+    'video/shape_inst2_C1.mp4',
+    'video/shape_inst3_C1.mp4',
+    'video/shape_inst4_C1.mp4',
+    'video/shape_inst5_C1.mp4',
+    'video/shape_inst1_C2.mp4',
+    'video/shape_inst2_C2.mp4',
+    'video/shape_inst3_C2.mp4',
+    'video/shape_inst4_C2.mp4',
+    'video/shape_inst5_C2.mp4',
+    'video/trial_correct_C1.mp4',
+    'video/trial_wrong_C1.mp4',
+    'video/trial_correct_C2.mp4',
+    'video/trial_wrong_C2.mp4'
+  ];
+
   var preload = {
     type: jsPsychPreload,
-    auto_preload: true
-  }
+    auto_preload: true,
+    stimuli: videoPaths
+  };
 
   var participant_info = {
     type: jsPsychSurveyText,
@@ -31,6 +49,7 @@
     ],
     data: {task_part: 'id-question'}
   }
+
 
   var version = {
     type: jsPsychSurvey,
@@ -68,7 +87,7 @@
       jsPsych.data.addProperties({condition: condition, counterbalancing: counterbalancing, order: order, version: version});
     }
   }
-
+/*
   var fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
@@ -83,6 +102,13 @@
     data: {task_part: 'fullscreen'}
   };
 
+  var start = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p>Let's get started</p>",
+    choices: ["Continue"],
+    response_allowed_while_playing: false
+  };
+*/
   var shape_demo = {
       timeline: [
         {
@@ -599,13 +625,9 @@
           ],
         },
         {
-          type: jsPsychSurveyText,
-          questions: [
-            {
-              prompt: "Did you notice anything interesting about the game?",
-              name: "noticed"
-            },
-          ],
+          type: jsPsychHtmlButtonResponse,
+          stimulus: "<p>Let's get started</p>",
+          choices: ["Continue"]
         }
       ],
       data: {task_part: 'exit-survey'}
@@ -1016,11 +1038,15 @@
 var hiding_demo = {
   timeline: [
     {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: '<p>This is where we introduce the hiding game.</p>' +
-        '<p>Add a video with instructions.</p>' +
-        '<p>Then, add a successful trial.</p>',
-        choices: ['Continue']
+      type: jsPsychVideoButtonResponse,
+      stimulus: [
+        function(){
+          return 'video/bush_inst_' + jsPsych.data.get().select('followup').values[0] + '.mp4'
+        }
+      ],
+      choices: [],
+      response_allowed_while_playing: false,
+      trial_ends_after_video: true
     },
     {
       type: jsPsychHtmlButtonResponse2,
@@ -1182,13 +1208,9 @@ var hiding_incorrect = {
           ],
         },
         {
-          type: jsPsychSurveyText,
-          questions: [
-            {
-              prompt: "Did you notice anything interesting about the game?",
-              name: "noticed"
-            },
-          ],
+          type: jsPsychHtmlButtonResponse,
+          stimulus: "<p>Did you notice anything interesting about the game?</p>",
+          choices: ["Continue"]
         }
       ],
       data: {task_part: 'hiding-survey'}
@@ -1259,7 +1281,6 @@ var hiding_incorrect = {
     preload,
     participant_info,
     version,
-    fullscreen,
     shape_game,
     survey,
     options,
