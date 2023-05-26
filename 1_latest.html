@@ -109,7 +109,7 @@
     response_allowed_while_playing: false
   };
 */
-  var shape_demo = {
+  var shape_instructions = {
       timeline: [
         {
           type: jsPsychVideoButtonResponse,
@@ -198,6 +198,24 @@
         }
       ],
       data: {task_part: 'demo'}
+    }
+
+    var shape_loop = {
+      timeline: [shape_instructions],
+      loop_function: function(){
+        var repeat = jsPsych.data.get().last(1).values()[0].response;
+        if(repeat == 0){
+          return true;
+        } else if(repeat == 1){
+          return false;
+        }
+      }
+    }
+
+    var shape_demo = {
+      timeline: [
+        shape_loop
+      ]
     }
 
     var day1_LP = {
@@ -594,48 +612,62 @@
       ]
     }
 
-  var survey = {
-      timeline: [
-        {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: '<p>Now I have some questions for you.</p>',
-          choices: ['Continue']
-        },
-        {
-          type: jsPsychSurveyMultiChoice,
-          questions: [
-            {
-              prompt: "How much did you like the game?",
-              name: 'liked',
-              options: ['A lot', 'A little', 'Not at all'],
-              required: false
-            },
-            {
-              prompt: "How much did you learn about which shapes Monster likes to eat?",
-              name: 'learned',
-              options: ['A lot', 'A little', 'Not at all'],
-              required: false
-            },
-            {
-              prompt: "How many stars did you get throughout the game?",
-              name: 'stars',
-              options: ['More each day', 'Fewer each day', 'Same each day'],
-              required: false
-            }
-          ],
-        },
-        {
-          type: jsPsychSurveyText,
-          questions: [
-            {
-              prompt: "<p>Did you notice anything interesting about the game?</p>",
-              name: "comments"
-            }
-          ]
-        },
-      ],
-      data: {task_part: 'exit-survey'}
+  var survey_intro = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Now I have some questions for you.</p>',
+    choices: ['Continue']
   }
+
+  var survey_main = {
+    type: jsPsychSurveyMultiChoice,
+    questions: [
+      {
+        prompt: "How much did you like the game?",
+        name: 'liked',
+        options: ['A lot', 'A little', 'Not at all'],
+        required: false
+      },
+      {
+        prompt: function(){
+          var counterbalancing = jsPsych.data.get().select('counterbalancing').values[0];
+          if(counterbalancing == "C1"){
+              return "How much did you learn about which shapes Monster likes to eat?";
+          } else if(counterbalancing == "C2"){
+              return "How much did you learn about which shapes Robot likes to eat?";
+          }
+        },
+        name: 'learned',
+        options: ['A lot', 'A little', 'Not at all'],
+        required: false
+      },
+      {
+        prompt: "How many stars did you get throughout the game?",
+        name: 'stars',
+        options: ['More each day', 'Fewer each day', 'Same each day'],
+        required: false
+      }
+    ],
+  }
+
+  var survey_comment = {
+    type: jsPsychSurveyText,
+    questions: [
+      {
+        prompt: "<p>Did you notice anything interesting about the game?</p>",
+        name: "comments"
+      }
+    ]
+  }
+
+  var survey = {
+    timeline: [
+      survey_intro,
+      survey_main,
+      survey_comment
+    ],
+    data: {task_part: 'exit-survey'}
+  }
+
 
   var options = {
     timeline: [
@@ -680,6 +712,17 @@
         button_html: '<img src="%choice%" />',
       },
       {
+        type: jsPsychSurveyText,
+        preamble: function(){
+          var chose = jsPsych.data.get().last(1).values()[0].response;
+          var selection = jsPsych.data.get().last(1).values()[0].choices[chose];
+          return '<img src=' + selection + '></img>';
+        },
+        questions: [
+          {prompt: "Why did you choose that game?", name: "choice-1"}
+        ]
+      },
+      {
         type: jsPsychHtmlButtonResponse,
         stimulus: '<p>Alright, here are the next three options:</p>',
         choices: ['Continue']
@@ -715,6 +758,17 @@
             }
           },
         button_html: '<img src="%choice%" />',
+      },
+      {
+        type: jsPsychSurveyText,
+        preamble: function(){
+          var chose = jsPsych.data.get().last(1).values()[0].response;
+          var selection = jsPsych.data.get().last(1).values()[0].choices[chose];
+          return '<img src=' + selection + '></img>';
+        },
+        questions: [
+          {prompt: "Why did you choose that game?", name: "choice-2"}
+        ]
       },
       {
         type: jsPsychHtmlButtonResponse,
@@ -760,6 +814,17 @@
           jsPsych.data.addProperties({followup: followup});
         }
       },
+      {
+        type: jsPsychSurveyText,
+        preamble: function(){
+          var chose = jsPsych.data.get().last(1).values()[0].response;
+          var selection = jsPsych.data.get().last(1).values()[0].choices[chose];
+          return '<img src=' + selection + '></img>';
+        },
+        questions: [
+          {prompt: "Why did you choose that game?", name: "choice-3"}
+        ]
+      },
     ],
     save_trial_parameters: {
       choices: true
@@ -767,7 +832,7 @@
     data: {task_part: 'options'}
   }
 
-  var shape_demo_followup = {
+  var shape_instructions_followup = {
       timeline: [
         {
           type: jsPsychVideoButtonResponse,
@@ -830,7 +895,7 @@
           type: jsPsychVideoButtonResponse,
           stimulus: [
             function(){
-              return 'video/shape_inst5_' + jsPsych.data.get().select('followup').values[0] + '.mp4'
+              return 'video/shape_inst6_' + jsPsych.data.get().select('followup').values[0] + '.mp4'
             }
           ],
           choices: [],
@@ -845,6 +910,24 @@
         }
       ],
       data: {task_part: 'followup-demo'}
+    }
+
+    var shape_loop_followup = {
+      timeline: [shape_instructions_followup],
+      loop_function: function(){
+        var repeat = jsPsych.data.get().last(1).values()[0].response;
+        if(repeat == 0){
+          return true;
+        } else if(repeat == 1){
+          return false;
+        }
+      }
+    }
+
+    var shape_demo_followup = {
+      timeline: [
+        shape_loop_followup
+      ]
     }
 
     var day1_followup = {
@@ -1030,16 +1113,76 @@
           data: {task_part: 'followup-day-3'}
         }
 
+        var shape_followup_survey_intro = {
+          type: jsPsychHtmlButtonResponse,
+          stimulus: '<p>Now I have some questions for you.</p>',
+          choices: ['Continue']
+        }
+
+        var shape_followup_survey_main = {
+          timeline: [
+            {
+              type: jsPsychSurveyMultiChoice,
+              questions: [
+                {
+                  prompt: "How much did you like the game?",
+                  name: 'liked',
+                  options: ['A lot', 'A little', 'Not at all'],
+                  required: false
+                },
+                {
+                  prompt: function(){
+                    var followup = jsPsych.data.get().select('followup').values[0];
+                    if(followup == "C1"){
+                        return "How much did you learn about which shapes Monster likes to eat?";
+                    } else if(followup == "C2"){
+                        return "How much did you learn about which shapes Robot likes to eat?";
+                    }
+                  },
+                  name: 'learned',
+                  options: ['A lot', 'A little', 'Not at all'],
+                  required: false
+                },
+                {
+                  prompt: "How many stars did you get throughout the game?",
+                  name: 'stars',
+                  options: ['More each day', 'Fewer each day', 'Same each day'],
+                  required: false
+                }
+              ],
+            },
+          ]
+        }
+
+        var shape_followup_survey_comment = {
+          type: jsPsychSurveyText,
+          questions: [
+            {
+              prompt: "<p>Did you notice anything interesting about the game?</p>",
+              name: "comments"
+            }
+          ]
+        }
+
+        var shape_followup_survey = {
+          timeline: [
+            shape_followup_survey_intro,
+            shape_followup_survey_main,
+            shape_followup_survey_comment
+          ]
+        }
+
         var shape_game_followup = {
           timeline: [
             shape_demo_followup,
             day1_followup,
             day2_followup,
             day3_followup,
+            shape_followup_survey,
           ]
         }
 
-var hiding_demo = {
+var hiding_instructions = {
   timeline: [
     {
       type: jsPsychVideoButtonResponse,
@@ -1069,9 +1212,33 @@ var hiding_demo = {
       response_allowed_while_playing: false,
       trial_ends_after_video: true
     },
+    {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "<p> Do you want to hear the instructions again or are you ready to play the game?</p>",
+      choices: ["Repeat","Continue"],
+      response_allowed_while_playing: false
+    }
   ],
   repetitions: 1,
   data: {task_part: 'hiding_demo'}
+}
+
+var hiding_loop = {
+  timeline: [hiding_instructions],
+  loop_function: function(){
+    var repeat = jsPsych.data.get().last(1).values()[0].response;
+    if(repeat == 0){
+      return true;
+    } else if(repeat == 1){
+      return false;
+    }
+  }
+}
+
+var hiding_demo = {
+  timeline: [
+    hiding_loop
+  ]
 }
 
 var hiding_correct = {
@@ -1186,7 +1353,13 @@ var hiding_incorrect = {
     data: {task_part: 'hiding_3'}
   }
 
-  var hiding_survey = {
+  var hiding_survey_intro = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Now I have some questions for you.</p>',
+    choices: ['Continue']
+  }
+
+  var hiding_survey_main = {
       timeline: [
         {
           type: jsPsychSurveyMultiChoice,
@@ -1198,7 +1371,14 @@ var hiding_incorrect = {
               required: false
             },
             {
-              prompt: "How much did you learn about which shapes Monster likes to eat?",
+              prompt: function(){
+                var followup = jsPsych.data.get().select('followup').values[0];
+                if(followup == "C3"){
+                    return "How much did you learn about where Monster was hiding?";
+                } else if(followup == "C4"){
+                    return "How much did you learn about where Robot was hiding?";
+                }
+              },
               name: 'learned',
               options: ['A lot', 'A little', 'Not at all'],
               required: false
@@ -1211,17 +1391,26 @@ var hiding_incorrect = {
             }
           ],
         },
-        {
-          type: jsPsychSurveyText,
-          questions: [
-            {
-              prompt: "<p>Did you notice anything interesting about the game?</p>",
-              name: "comments"
-            }
-          ]
-        },
-      ],
-      data: {task_part: 'hiding-survey'}
+      ]
+    }
+
+  var hiding_survey_comment = {
+    type: jsPsychSurveyText,
+    questions: [
+      {
+        prompt: "<p>Did you notice anything interesting about the game?</p>",
+        name: "comments"
+      }
+    ]
+  }
+
+  var hiding_survey = {
+    timeline: [
+      hiding_survey_intro,
+      hiding_survey_main,
+      hiding_survey_comment
+    ],
+    data: {task_part: 'hiding-survey'}
   }
 
   var hiding_game = {
@@ -1267,8 +1456,15 @@ var hiding_incorrect = {
       }
   }
 
+  var followup_intro = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p>Let's play the next game!</p>",
+    choices: ['Continue']
+  }
+
   var followup_game = {
       timeline: [
+        followup_intro,
         shape_node,
         hiding_node
       ]
@@ -1290,8 +1486,8 @@ var hiding_incorrect = {
     participant_info,
     version,
     fullscreen,
-    shape_game,
-    survey,
+    //shape_game,
+    //survey,
     options,
     followup_game,
     ending
