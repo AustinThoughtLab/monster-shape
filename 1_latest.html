@@ -87,7 +87,7 @@
       jsPsych.data.addProperties({condition: condition, counterbalancing: counterbalancing, order: order, version: version});
     }
   }
-/*
+
   var fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
@@ -101,7 +101,7 @@
     },
     data: {task_part: 'fullscreen'}
   };
-
+/*
   var start = {
     type: jsPsychHtmlButtonResponse,
     stimulus: "<p>Let's get started</p>",
@@ -625,10 +625,14 @@
           ],
         },
         {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: "<p>Let's get started</p>",
-          choices: ["Continue"]
-        }
+          type: jsPsychSurveyText,
+          questions: [
+            {
+              prompt: "<p>Did you notice anything interesting about the game?</p>",
+              name: "comments"
+            }
+          ]
+        },
       ],
       data: {task_part: 'exit-survey'}
   }
@@ -1208,10 +1212,14 @@ var hiding_incorrect = {
           ],
         },
         {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: "<p>Did you notice anything interesting about the game?</p>",
-          choices: ["Continue"]
-        }
+          type: jsPsychSurveyText,
+          questions: [
+            {
+              prompt: "<p>Did you notice anything interesting about the game?</p>",
+              name: "comments"
+            }
+          ]
+        },
       ],
       data: {task_part: 'hiding-survey'}
   }
@@ -1281,6 +1289,7 @@ var hiding_incorrect = {
     preload,
     participant_info,
     version,
+    fullscreen,
     shape_game,
     survey,
     options,
