@@ -1384,9 +1384,9 @@ var hiding_incorrect = {
               required: false
             },
             {
-              prompt: "How many stars did you get throughout the game?",
-              name: 'stars',
-              options: ['More each day', 'Fewer each day', 'Same each day'],
+              prompt: "How many right guesses did you make throughout the game?",
+              name: 'improved',
+              options: ['More', 'Less', 'Same'],
               required: false
             }
           ],
@@ -1473,7 +1473,7 @@ var hiding_incorrect = {
   //end message//
   var ending = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: "<p>Thank you for participating in this game!</p>",
+    stimulus: "<p>Thank you for playing this game!</p>",
     on_start: function(data){
       var id = jsPsych.data.get().filter({task_part: 'id-question'}).values()[0].response['participant_ID'];
       var file_name = 'LT_' + id + '.csv';
@@ -1486,8 +1486,8 @@ var hiding_incorrect = {
     participant_info,
     version,
     fullscreen,
-    //shape_game,
-    //survey,
+    shape_game,
+    survey,
     options,
     followup_game,
     ending
