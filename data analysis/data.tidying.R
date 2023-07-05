@@ -39,9 +39,6 @@ View(df2)
 
 
 
-# hello!
-# what's up
-#sfjldkfjslkdfj
 
 
 
