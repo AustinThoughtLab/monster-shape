@@ -66,6 +66,15 @@ subdf <- df2 %>%
 
 View(subdf)
 
+#count how many kids chose 0,1,2,3 similar follow-up games
+#test main hypothesis. are there at least 5 per cell?
+  #if yes: chi-square test
+  #if no: fisher's exact
+
+#read in + clean tower task data
+#combine jspsych and tower data on one sheet
+#check if there was any self-challenge difference between LP and NLP kids
+#run LP/NLP + self-challenge analysis (which?)
 
 
 
