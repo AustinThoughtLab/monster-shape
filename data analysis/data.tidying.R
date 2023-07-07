@@ -1,6 +1,7 @@
 ############## Data Formatting Script ##############
 
 library(tidyverse)
+library(dplyr)
 library(stringr)
 
 setwd("/Users/beliz/OneDrive/Desktop/Austin Thought Lab/honors thesis/data")
@@ -84,31 +85,55 @@ lt$response <- lt$response %>%
  
 # recode options to be their choices
 
-lt2 <- lt %>%
-  filter(task_part=="options") %>%
-  select(response,choices) %>%
-  filter(choices!='["Continue"]') %>%
-  filter(choices!='[]') %>%
-  mutate(choices2 = choices %>%
-           str_remove('\\[') %>%
-           str_remove('\"]') %>%
-           str_remove_all('img/opt/opt') %>%
-           str_remove_all('\"') %>%
-           str_remove_all('.png'))
+lt2 <- lt
+
+lt2$choices <- lt2$choices %>%
+  str_remove('\\[') %>%
+  str_remove('\"]') %>%
+  str_remove_all('img/opt/opt') %>%
+  str_remove_all('\"') %>%
+  str_remove_all('.png') %>% 
+  str_remove_all("img/shape/") %>%
+  str_replace_all(",img/shape/", " ") 
+
+# after strsplit we should use something like nth(as.numeric(response)+1) to get the right item from the vector
+
+lt2.5 <- lt2 %>% 
+  filter(task_part== "options" & trial_type == "html-button-response2") %>% 
+  mutate(response = recode(response, "0" = substr(choices, 1, 2), 
+                           "1" = substr(choices, 4, 5), 
+                           "2" = substr(choices, 7, 8),
+                           .default = NA_character_))
+
+lt2.5$response <- lt2.5$response %>% 
+  str_replace_all("A1", "monkey-shape") %>% 
+  str_replace_all("A2", "monster-path") %>% 
+  str_replace_all("A3", "robot-path") %>% 
+  str_replace_all("A4", "monkey-path") %>% 
+  str_replace_all("B1", "alien-shape") %>% 
+  str_replace_all("B2", "monster-ball") %>% 
+  str_replace_all("B3", "robot-ball") %>% 
+  str_replace_all("B4", "alien-ball") %>% 
+  str_replace_all("C1", "monster-shape") %>% 
+  str_replace_all("C2", "robot-shape") %>% 
+  str_replace_all("C3", "monster-hiding") %>% 
+  str_replace_all("C4", "robot-hiding")
+  
 
 
-
-options <- df %>%
-  filter(task_part=="options") %>%
-  select(response,choices) %>%
-  filter(choices!='["Continue"]') %>%
-  filter(choices!='[]') %>%
-  mutate(choices2 = choices %>%
-           str_remove('\\[') %>%
-           str_remove('\"]') %>%
-           str_remove_all('img/opt/opt') %>%
-           str_remove_all('\"') %>%
-           str_remove_all('.png'))
+# NOTE:
+## "A1" = "monkey-shape"
+## "A2" = "monster-path"
+## "A3" = "robot-path"
+## "A4" = "monkey-path"
+## "B1" = "alien-shape"
+## "B2" = "monster-ball"
+## "B3" = "robot-ball"
+## "B4" = "alien-ball"
+## "C1" = "monster-shape"
+## "C2" = "robot-shape"
+## "C3" = "monster-hiding"
+## "C4" = "robot-hiding"
 
 options_ans <- options %>%
   filter(choices2!="") %>%
