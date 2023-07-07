@@ -37,7 +37,7 @@ df2 <- subset(df, trial_type!="video-button-response" & trial_type!= "fullscreen
               & stimulus != "<p>Alright, here are the last three options:</p>"
               & stimulus != "<p>Let's play the next game!</p>"
               & stimulus != "<p> Do you want to hear the instructions again or are you ready to play the game?</p>",
-              )
+)
 View(df2)
 
 # fix pid
@@ -49,7 +49,7 @@ df2 <- df2 %>%
 
 # reorder columns
 col_order <- c("participant.id", "condition", "counterbalancing",
-                 "order", "task_part", "response", "trial_type", "trial_index", "choices", "correct")
+               "order", "task_part", "response", "trial_type", "trial_index", "choices", "correct")
 lt <- df2[, col_order]
 
 ## recode thingsss
@@ -80,8 +80,22 @@ lt$response <- lt$response %>%
   str_remove("\"\\}") %>%
   str_remove("\\{\"learned-q\":\"") %>%
   str_remove("\"\\}") %>%
-  str_remove(""{"guesses":"") %>% 
-  as.numeric()
+  str_remove("\\{\"guesses\":\"")
+ 
+# recode options to be their choices
+
+lt2 <- lt %>%
+  filter(task_part=="options") %>%
+  select(response,choices) %>%
+  filter(choices!='["Continue"]') %>%
+  filter(choices!='[]') %>%
+  mutate(choices2 = choices %>%
+           str_remove('\\[') %>%
+           str_remove('\"]') %>%
+           str_remove_all('img/opt/opt') %>%
+           str_remove_all('\"') %>%
+           str_remove_all('.png'))
+
 
 
 options <- df %>%
@@ -96,12 +110,56 @@ options <- df %>%
            str_remove_all('\"') %>%
            str_remove_all('.png'))
 
+options_ans <- options %>%
+  filter(choices2!="") %>%
+  mutate(response2 = response %>%
+           as.numeric() + 1
+  ) %>%
+  select(response2,choices2)
 
+choice_1 <- options_ans$choices2[1] %>%
+  str_split(",") %>%
+  unlist() %>%
+  nth(options_ans$response2[1]) %>%
+  recode("A1" = "monkey-shape",
+         "A2" = "monster-path",
+         "A3" = "robot-path",
+         "A4" = "monkey-path")
 
+choice_2 <- options_ans$choices2[2] %>%
+  str_split(",") %>%
+  unlist() %>%
+  nth(options_ans$response2[2]) %>%
+  recode("B1" = "alien-shape",
+         "B2" = "monster-ball",
+         "B3" = "robot-ball",
+         "B4" = "alien-ball")
+
+choice_3 <- options_ans$choices2[3] %>%
+  str_split(",") %>%
+  unlist() %>%
+  nth(options_ans$response2[3]) %>%
+  recode("C1" = "monster-shape",
+         "C2" = "robot-shape",
+         "C3" = "monster-hiding",
+         "C4" = "robot-hiding")
+
+options_exp <- options %>%
+  filter(choices2=="") %>%
+  pull(response) %>%
+  str_remove("\\{\"choice-.\":\"") %>%
+  str_remove('"\\}')
+
+choice_1_exp <- options_exp[1]
+choice_2_exp <- options_exp[2]
+choice_3_exp <- options_exp[3]
+
+View(options)
 
 ## if o1 and 2, then "option"
 ## correct T/F standardized
 ## task_part == day-1, task_part ==day-2, task_part == day=3 --> choices...
+## make text/ data csvs
 
 
 
@@ -128,17 +186,3 @@ subdf <- df2 %>%
            task_part!= "followup-day-1" & task_part!="followup-day-2" & task_part!= "followup-day-3")
 
 View(subdf)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
