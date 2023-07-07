@@ -80,8 +80,9 @@ lt$response <- lt$response %>%
   str_remove("\"\\}") %>%
   str_remove("\\{\"learned-q\":\"") %>%
   str_remove("\"\\}") %>%
-  str_remove(""{"guesses":"") %>% 
-  as.numeric()
+  str_remove("\\{\"guesses\":\"")
+ 
+# as.numeric()
 
 
 options <- df %>%
@@ -102,6 +103,7 @@ options <- df %>%
 ## if o1 and 2, then "option"
 ## correct T/F standardized
 ## task_part == day-1, task_part ==day-2, task_part == day=3 --> choices...
+## make text/ data csvs
 
 
 
