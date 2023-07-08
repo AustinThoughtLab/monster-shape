@@ -97,6 +97,7 @@ lt2$choices <- lt2$choices %>%
   str_replace_all(",img/shape/", " ") 
 
 # after strsplit we should use something like nth(as.numeric(response)+1) to get the right item from the vector
+# need to fix vvv I did it the lazy way but Jimmy knows a better way to do it!! 
 
 lt2.5 <- lt2 %>% 
   filter(task_part== "options" & trial_type == "html-button-response2") %>% 
