@@ -97,7 +97,7 @@ lt2$choices <- lt2$choices %>%
   str_replace_all(",img/shape/", " ") 
 
 # after strsplit we should use something like nth(as.numeric(response)+1) to get the right item from the vector
-# need to fix vvv I did it the lazy way but Jimmy knows a better way to do it!! 
+# need to fix vvv I did it the lazy way but Jimmy knows a better way to do it
 
 lt2.5 <- lt2 %>% 
   filter(task_part== "options" & trial_type == "html-button-response2") %>% 
@@ -119,22 +119,24 @@ lt2.5$response <- lt2.5$response %>%
   str_replace_all("C2", "robot-shape") %>% 
   str_replace_all("C3", "monster-hiding") %>% 
   str_replace_all("C4", "robot-hiding")
-  
+
+# need to merge lt2.5 -> lt2 regardless of differing row #s... ugggghhghghghgh
+
+# not working -> f <- merge(x = lt2.5, y = lt2, by = "participant.id", all.x=TRUE)
+
+lt3 <- lt2
+lt3.5 <- lt2.5
+
+lt3[match(lt3.5$participant.id, lt3$participant.id), ] <- lt3.5
+
+lt3[match(lt3.5$task_part, lt3$task_part, incomparables = NULL), ] <- lt3.5
+
+# join if participant ID matches and task_part = options AND trial_type = html-button-response-2 
 
 
-# NOTE:
-## "A1" = "monkey-shape"
-## "A2" = "monster-path"
-## "A3" = "robot-path"
-## "A4" = "monkey-path"
-## "B1" = "alien-shape"
-## "B2" = "monster-ball"
-## "B3" = "robot-ball"
-## "B4" = "alien-ball"
-## "C1" = "monster-shape"
-## "C2" = "robot-shape"
-## "C3" = "monster-hiding"
-## "C4" = "robot-hiding"
+View(lt3)
+
+
 
 options_ans <- options %>%
   filter(choices2!="") %>%
