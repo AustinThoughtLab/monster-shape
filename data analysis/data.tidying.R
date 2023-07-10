@@ -175,7 +175,7 @@ sublt <- lt2 %>%
            task_part!="hiding_1" & task_part!= "hiding_2" & task_part!= "hiding_3" &
            task_part!= "followup-day-1" & task_part!="followup-day-2" & task_part!= "followup-day-3")
 
-# dataset with only the survey text responses
+# dataset with only the follow-up choices
 
 choiceslt <- lt2 %>%
   filter(task_part == "options") %>% 
@@ -183,6 +183,7 @@ choiceslt <- lt2 %>%
 
 View(choiceslt)
 
+# dataset with only the survey text responses
 
 textlt <- lt2 %>%
   filter(task_part == "options") %>% 
