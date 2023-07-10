@@ -111,7 +111,7 @@ lt2$choices <- lt2$choices %>%
 
 # recoding choices to be more intuitive 
 
-lt2 <- lt2 %>%
+lt <- lt2 %>%
   mutate(response2 = ifelse(task_part=="options" &
                               trial_type=="html-button-response2",
                             recode(response, "0" = substr(choices, 1, 2), 
@@ -149,6 +149,8 @@ sublt <- lt2 %>%
            task_part!="hiding_1" & task_part!= "hiding_2" & task_part!= "hiding_3" &
            task_part!= "followup-day-1" & task_part!="followup-day-2" & task_part!= "followup-day-3")
 
+View(sublt)
+
 # dataset with only the follow-up choices
 
 choiceslt <- lt2 %>%
@@ -166,13 +168,5 @@ textlt <- lt2 %>%
   select(-choices, -correct)
 
 View(textlt)
-
-
-
-
-
-
-
-
 
 
