@@ -31,7 +31,7 @@ for(i in 1:length(files)){
 
 # misc rows added in by script
 df2 <- subset(df, trial_type!="video-button-response" & trial_type!= "fullscreen" & trial_type!= "preload"
-              & task_part != "demo" & task_part != "id-question" & task_part != "version" 
+              & task_part != "demo" & task_part != "id-question" & task_part != "version" & task_part != "hiding_demo"
               & stimulus != "<p>Now I have some questions for you.</p>"
               & stimulus != "<p>Now, we’re going to choose a new game to play.</p><p>We’re going to look at different games, and for each set of games</p><p>you’ll choose the one you want to play the most.</p><p>Here are the options:</p>"
               & stimulus != "<p>Alright, here are the next three options:</p>"
@@ -138,57 +138,14 @@ lt2 <- lt2 %>%
   select(-response3)
 
 
+## 
 
 
-options_ans <- options %>%
-  filter(choices2!="") %>%
-  mutate(response2 = response %>%
-           as.numeric() + 1
-  ) %>%
-  select(response2,choices2)
 
-choice_1 <- options_ans$choices2[1] %>%
-  str_split(",") %>%
-  unlist() %>%
-  nth(options_ans$response2[1]) %>%
-  recode("A1" = "monkey-shape",
-         "A2" = "monster-path",
-         "A3" = "robot-path",
-         "A4" = "monkey-path")
 
-choice_2 <- options_ans$choices2[2] %>%
-  str_split(",") %>%
-  unlist() %>%
-  nth(options_ans$response2[2]) %>%
-  recode("B1" = "alien-shape",
-         "B2" = "monster-ball",
-         "B3" = "robot-ball",
-         "B4" = "alien-ball")
-
-choice_3 <- options_ans$choices2[3] %>%
-  str_split(",") %>%
-  unlist() %>%
-  nth(options_ans$response2[3]) %>%
-  recode("C1" = "monster-shape",
-         "C2" = "robot-shape",
-         "C3" = "monster-hiding",
-         "C4" = "robot-hiding")
-
-options_exp <- options %>%
-  filter(choices2=="") %>%
-  pull(response) %>%
-  str_remove("\\{\"choice-.\":\"") %>%
-  str_remove('"\\}')
-
-choice_1_exp <- options_exp[1]
-choice_2_exp <- options_exp[2]
-choice_3_exp <- options_exp[3]
-
-View(options)
 
 ## if o1 and 2, then "option"
 ## correct T/F standardized
-## task_part == day-1, task_part ==day-2, task_part == day=3 --> choices...
 ## make text/ data csvs
 
 
@@ -208,17 +165,30 @@ View(options)
 ## "C4" = "robot-hiding"
 
 
+
+## Subsetting the data
+
 # dataset without all of the task choices
 
-subdf <- df2 %>% 
+sublt <- lt2 %>% 
   subset(task_part!="day-1" & task_part!= "day-2" & task_part!= "day-3" &
            task_part!="hiding_1" & task_part!= "hiding_2" & task_part!= "hiding_3" &
            task_part!= "followup-day-1" & task_part!="followup-day-2" & task_part!= "followup-day-3")
 
-View(subdf)
+# dataset with only the survey text responses
+
+choiceslt <- lt2 %>%
+  filter(task_part == "options") %>% 
+  subset(trial_type != "survey-text")
+
+View(choiceslt)
 
 
+textlt <- lt2 %>%
+  filter(task_part == "options") %>% 
+  subset(trial_type != "html-button-response2")
 
+View(textlt)
 
 
 
