@@ -144,7 +144,7 @@ lt <- lt2 %>%
 
 # dataset without all of the task choices
 
-sublt <- lt2 %>% 
+sublt <- lt %>% 
   subset(task_part!="day-1" & task_part!= "day-2" & task_part!= "day-3" &
            task_part!="hiding_1" & task_part!= "hiding_2" & task_part!= "hiding_3" &
            task_part!= "followup-day-1" & task_part!="followup-day-2" & task_part!= "followup-day-3")
@@ -153,7 +153,7 @@ View(sublt)
 
 # dataset with only the follow-up choices
 
-choiceslt <- lt2 %>%
+choiceslt <- lt %>%
   filter(task_part == "options") %>% 
   subset(trial_type != "survey-text" & trial_type != "html-button-response") %>% 
   select(-correct)
@@ -162,7 +162,7 @@ View(choiceslt)
 
 # dataset with only the survey text responses
 
-textlt <- lt2 %>%
+textlt <- lt %>%
   filter(task_part == "options") %>% 
   subset(trial_type != "html-button-response2" & trial_type != "html-button-response") %>%
   select(-choices, -correct)
